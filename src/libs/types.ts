@@ -1,4 +1,14 @@
-export interface AzureContainerAppConfig {
+
+export interface MatrixConfigBase {
+  type: string;
+  /**
+   * Credential for getting config from any key store e.g. KeyVault
+   */
+  credential: KeyVaultConfig;
+}
+
+export interface AzureContainerAppConfig extends MatrixConfigBase {
+  type: 'azure_container_app';
   /**
    * The unique identifier of the config e.g. resource name
    */
@@ -11,10 +21,6 @@ export interface AzureContainerAppConfig {
    * Resource Group where the Container App is deployed
    */
   resource_group: string;
-  /**
-   * Credential for getting config from any key store e.g. KeyVault
-   */
-  credential: KeyVaultConfig;
   /**
    * Additional Metadata for the config
    */
