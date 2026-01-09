@@ -71,6 +71,9 @@ export class AzureKeyVault extends Azure {
       },
     });
 
-    console.log(`Service principal credentials stored in Key Vault: ${config.secretName}`);
+    console.log(`✅ Secret stored successfully in Key Vault`);
+    console.log(`   Secret Name: ${config.secretName}`);
+    console.log(`   Type: ${config.metadata.secretType}`);
+    console.log(`   Purpose: ${config.metadata.purpose ?? 'Deploy with GitHub Actions'}`);
   }
 }
