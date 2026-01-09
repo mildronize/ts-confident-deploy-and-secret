@@ -7,8 +7,9 @@ A hands-on workshop to learn confident deployment and secret management for Azur
 Before starting, ensure you have:
 
 1. **Azure CLI** installed and authenticated (`az login`)
-2. **Bun runtime** installed (v1.3.3+)
-3. **Git** and **GitHub account**
+2. Install **Microsoft Authenticator** app on your mobile device for MFA on Azure, if you haven't already.
+3. **Bun runtime** installed (v1.0.0 or later)
+4. **Git** and **GitHub account**
 
 ## Workshop Information
 
@@ -23,6 +24,8 @@ The speaker has pre-configured the following Azure resources:
 ## Part 1: Configure Your Project
 
 ### Step 1: Clone and Install Dependencies
+
+Go to browser and create a new repository from the template: https://github.com/mildronize/ts-confident-deploy-and-secret
 
 ```bash
 git clone <your-repo-url>
@@ -174,3 +177,7 @@ If you can't access the Key Vault, contact the speaker to grant you access.
 - Create additional environments (staging, production)
 - Customize the deployment workflow
 - Implement proper RBAC with custom roles (see TODO in `src/libs/setup-secret.ts:49`)
+
+## Resources
+
+- If you want to know how speaker prepared the infra, checkout the repo: https://github.com/mildronize/ts-confident-deploy-and-secret-speaker
