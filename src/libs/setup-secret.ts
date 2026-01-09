@@ -1,8 +1,26 @@
-import type { DefaultAzureCredential } from "@azure/identity";
+import { DefaultAzureCredential } from "@azure/identity";
 import { AzureKeyVault } from "./azure/keyvault";
-import type { AzureContainerAppConfig } from "./types";
+import type { AzureContainerAppConfig, MatrixConfigBase } from "./types";
 import { createServicePrincipalAndAssignRole } from "@thaitype/azure-service-principal";
 import { AzureResourceId } from "./azure/resourceId";
+
+
+export function setupSecrets(config: Record<string, MatrixConfigBase[]>, options?: { dryRun?: boolean }) {
+  const dryRun = options?.dryRun ?? false;
+
+  const credential = new DefaultAzureCredential();
+
+  for (const resourceType in config) {
+    if (!config[resourceType]) throw new Error(`Invalid resource type config: ${resourceType}`);
+    for (const resourceConfig of config[resourceType]) {
+      if (resourceType === 'azure_container_app') {
+        setupSecretsForContainerApp(credential, resourceConfig as AzureContainerAppConfig, { dryRun });
+      } else {
+        console.warn(`Unsupported resource type: ${resourceType}, skip setup secret`);
+      }
+    }
+  }
+}
 
 export async function setupSecretsForContainerApp(
   credential: DefaultAzureCredential,
