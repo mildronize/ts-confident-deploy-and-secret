@@ -6,7 +6,7 @@ const displayName = 'mildr';
 export const devResources: Record<string, MatrixConfigBase[]> = {
   'azure_container_app': [
     {
-      id: 'dev-dev-001',
+      id: `dev-azure-container-app-ntotr-${displayName}`,
       type: 'azure_container_app',
       name: `app-ntotr-${displayName}`,
       resource_group: 'rg-northern-tech-workshop',
