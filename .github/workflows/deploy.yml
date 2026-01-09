@@ -3,9 +3,6 @@ on:
   workflow_dispatch:
 
 env:
-  CONTAINER_APP_NAME: container-app-example
-  RESOURCE_GROUP: rg-container-app-example
-  IMAGE_NAME: ghcr.io/mildronize/kubricate-demo-azure-global-2025:main
   REVISION_SUFFIX: gh-actions-${{ github.run_id }}-${{ github.run_attempt }}
 
   BUN_VERSION: 1.3.3
