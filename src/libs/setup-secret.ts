@@ -1,8 +1,8 @@
 import type { DefaultAzureCredential } from "@azure/identity";
-import { AzureKeyVault } from "../azure/keyvault";
+import { AzureKeyVault } from "./azure/keyvault";
 import type { AzureContainerAppConfig } from "./types";
 import { createServicePrincipalAndAssignRole } from "@thaitype/azure-service-principal";
-import { AzureResourceId } from "../azure/resourceId";
+import { AzureResourceId } from "./azure/resourceId";
 
 export async function setupSecretsForContainerApp(
   credential: DefaultAzureCredential,
