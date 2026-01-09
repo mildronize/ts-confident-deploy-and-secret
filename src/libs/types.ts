@@ -22,6 +22,10 @@ export interface AzureContainerAppConfig extends MatrixConfigBase {
    */
   resource_group: string;
   /**
+   * Container Image to deploy
+   */
+  container_image: string;
+  /**
    * Additional Metadata for the config
    */
   metadata: Record<string, unknown> & {

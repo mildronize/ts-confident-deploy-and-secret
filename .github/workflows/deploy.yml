@@ -8,13 +8,34 @@ env:
   IMAGE_NAME: ghcr.io/mildronize/kubricate-demo-azure-global-2025:main
   REVISION_SUFFIX: gh-actions-${{ github.run_id }}-${{ github.run_attempt }}
 
+  BUN_VERSION: 1.3.3
+  AZURE_CLI_VERSION: 2.72.0
+
 jobs:
+  get-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      deployment-matrix: ${{ steps.set-matrix-output.outputs.matrix }}
+    steps:
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set deployment matrix output
+        id: set-matrix-output
+        run: | 
+          bun run src/entry/deploy.ts
+
   deploy:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ fromJson(needs.get-matrix.outputs.deployment-matrix).container_apps }}
+        include: ${{ fromJson(needs.get-matrix.outputs.deployment-matrix).azure_container_app }}
 
     steps:
       - uses: thaitype/actions-az-cli/keyvault/secret/show@v1
@@ -34,25 +55,25 @@ jobs:
         run: |
           echo "Starting deploy Container on Azure Container App"
           echo "----------------------------------------------------------"
-          echo "Container App Name: '${{ env.CONTAINER_APP_NAME }}'"
-          echo "Resource group: '${{ env.RESOURCE_GROUP }}'"
-          echo "Image name: '${{ env.IMAGE_NAME }}'"
+          echo "Container App Name: '${{ matrix.name }}'"
+          echo "Resource group: '${{ matrix.resource_group }}'"
+          echo "Image name: '${{ matrix.container_image }}'"
           echo "Revision Suffix: '${{ env.REVISION_SUFFIX }}'"
 
       - name: Deploy image to Azure Container App with Revision Suffix
         uses: azure/CLI@v1
         with:
-          azcliversion: 2.72.0
+          azcliversion: ${{ env.AZURE_CLI_VERSION }}
           inlineScript: |
             az containerapp update \
-              --name ${{ env.CONTAINER_APP_NAME }} \
-              --resource-group ${{ env.RESOURCE_GROUP }} \
-              --image ${{ env.IMAGE_NAME }} \
-              --revision-suffix ${{ env.REVISION_SUFFIX}} > ${{ env.CONTAINER_APP_NAME }}.log.txt
+              --name ${{ matrix.name }} \
+              --resource-group ${{ matrix.resource_group }} \
+              --image ${{ matrix.container_image }} \
+              --revision-suffix ${{ env.REVISION_SUFFIX}} > ${{ matrix.name }}.log.txt
 
       - name: Clean tmp files (Sensitive Information)
         run: |
-          rm -f ${{ env.CONTAINER_APP_NAME }}.log.txt
+          rm -f ${{ matrix.name }}.log.txt
         shell: bash
 
       - name: Logout Azure
