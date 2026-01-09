@@ -1,0 +1,61 @@
+name: Deploy
+on:
+  workflow_dispatch:
+
+env:
+  CONTAINER_APP_NAME: container-app-example
+  RESOURCE_GROUP: rg-container-app-example
+  IMAGE_NAME: ghcr.io/mildronize/kubricate-demo-azure-global-2025:main
+  REVISION_SUFFIX: gh-actions-${{ github.run_id }}-${{ github.run_attempt }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.get-matrix.outputs.deployment-matrix).container_apps }}
+
+    steps:
+      - uses: thaitype/actions-az-cli/keyvault/secret/show@v1
+        id: get_secret_from_vault
+        with:
+          azure_credentials: ${{ secrets[matrix.credential.gh_secret_name] }}
+          vault_name: ${{ matrix.credential.vault_name }}
+          secret_name: ${{ matrix.credential.secret_name }}
+
+      - name: Login Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ steps.get_secret_from_vault.outputs.secret }}
+
+      - name: Info Deploy Message
+        shell: bash
+        run: |
+          echo "Starting deploy Container on Azure Container App"
+          echo "----------------------------------------------------------"
+          echo "Container App Name: '${{ env.CONTAINER_APP_NAME }}'"
+          echo "Resource group: '${{ env.RESOURCE_GROUP }}'"
+          echo "Image name: '${{ env.IMAGE_NAME }}'"
+          echo "Revision Suffix: '${{ env.REVISION_SUFFIX }}'"
+
+      - name: Deploy image to Azure Container App with Revision Suffix
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.72.0
+          inlineScript: |
+            az containerapp update \
+              --name ${{ env.CONTAINER_APP_NAME }} \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --image ${{ env.IMAGE_NAME }} \
+              --revision-suffix ${{ env.REVISION_SUFFIX}} > ${{ env.CONTAINER_APP_NAME }}.log.txt
+
+      - name: Clean tmp files (Sensitive Information)
+        run: |
+          rm -f ${{ env.CONTAINER_APP_NAME }}.log.txt
+        shell: bash
+
+      - name: Logout Azure
+        if: always()
+        shell: bash
+        run: az logout
