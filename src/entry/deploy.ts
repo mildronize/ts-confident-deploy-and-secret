@@ -6,7 +6,7 @@ console.log('🚀 Generating Deployment Matrix for GitHub Actions');
 console.log('==================================================');
 console.log('');
 
-setOutput(devResources, "deployment-matrix");
+setOutput(devResources, "json-matrix");
 
 console.log('✨ Deployment matrix generation completed!');
 console.log('');

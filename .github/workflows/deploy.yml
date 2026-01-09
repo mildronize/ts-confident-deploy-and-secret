@@ -12,7 +12,7 @@ jobs:
   get-matrix:
     runs-on: ubuntu-latest
     outputs:
-      deployment-matrix: ${{ steps.set-matrix-output.outputs.matrix }}
+      deployment-matrix: ${{ steps.set-matrix-output.outputs.json-matrix }}
     steps:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
