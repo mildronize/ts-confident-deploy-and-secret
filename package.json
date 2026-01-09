@@ -1,5 +1,5 @@
 {
-  "name": "e2e-type-safety-deploy-and-secret",
+  "name": "ts-confident-deploy-and-secret",
   "module": "index.ts",
   "type": "module",
   "private": true,

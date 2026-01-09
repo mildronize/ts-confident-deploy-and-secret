@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "e2e-type-safety-deploy-and-secret",
+      "name": "ts-confident-deploy-and-secret",
       "dependencies": {
         "@actions/core": "^2.0.2",
         "@azure/identity": "^4.13.0",
