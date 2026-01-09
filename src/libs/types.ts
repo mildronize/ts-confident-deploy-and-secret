@@ -1,5 +1,9 @@
 
-export interface MatrixConfigBase {
+export interface MatrixConfigBase extends Record<string, unknown> {
+  /**
+ * The unique identifier of the config e.g. resource name
+ */
+  id: string;
   type: string;
   /**
    * Credential for getting config from any key store e.g. KeyVault
@@ -9,10 +13,6 @@ export interface MatrixConfigBase {
 
 export interface AzureContainerAppConfig extends MatrixConfigBase {
   type: 'azure_container_app';
-  /**
-   * The unique identifier of the config e.g. resource name
-   */
-  id: string;
   /**
    * Resource name of the Container App
    */
